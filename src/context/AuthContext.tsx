@@ -17,13 +17,20 @@ import {
   type ReactNode,
 } from "react";
 import { db, firebaseAuth } from "../config/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  runTransaction,
+  serverTimestamp,
+} from "firebase/firestore";
 import type { User as AppUser } from "@/types/models";
-import { useNavigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import { Loader } from "@/components/retroui/Loader";
 
 type AuthContextType = {
   firebaseUser: FirebaseUser | null;
   appUser: AppUser | null;
+  loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, username: string) => Promise<void>;
   googleSignIn: () => Promise<UserCredential>;
@@ -34,27 +41,38 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(
+    () => firebaseAuth.currentUser
+  );
   const [appUser, setAppUser] = useState<AppUser | null>(null);
-  // const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
-      setFirebaseUser(user);
-
       if (user) {
         // Load Firestore user profile if exists
-        const ref = doc(db, "users", user.uid);
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          setAppUser(snap.data() as AppUser);
-        } else {
+        try {
+          const ref = doc(db, "users", user.uid);
+          const snap = await getDoc(ref);
+          if (snap.exists()) {
+            setAppUser(snap.data() as AppUser);
+          } else {
+            console.log("non bro");
+
+            setAppUser(null);
+          }
+        } catch (error) {
+          console.error("Error fetching user profile:", error);
           setAppUser(null);
+        } finally {
+          setLoading(false);
         }
       } else {
         setAppUser(null);
       }
+      setFirebaseUser(user);
+
+      setLoading(false);
     });
 
     return unsubscribe;
@@ -62,7 +80,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     await signInWithEmailAndPassword(firebaseAuth, email, password);
-    navigate("/home");
   };
 
   const signUp = async (email: string, password: string, username: string) => {
@@ -71,18 +88,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email,
       password
     );
+
+    const uid = userCred.user.uid;
+
+    const usernameRef = doc(db, "usernames", username);
+    const userRef = doc(db, "users", uid);
+
     const newUser: AppUser = {
-      id: userCred.user.uid,
       email: userCred.user.email!,
       username,
       currentScore: null,
       lastPlayed: null,
-      createdAt: new Date().toISOString(),
+      createdAt: serverTimestamp(),
     };
 
-    await setDoc(doc(db, "users", userCred.user.uid), newUser);
-    setAppUser(newUser);
-    navigate("/home");
+    try {
+      await runTransaction(db, async (transaction) => {
+        const usernameDoc = await transaction.get(usernameRef);
+
+        if (usernameDoc.exists()) {
+          throw new Error("Username already taken");
+        }
+
+        transaction.set(usernameRef, { uid });
+        transaction.set(userRef, newUser);
+      });
+
+      setAppUser(newUser);
+    } catch (error) {
+      await userCred.user.delete();
+      console.error("Error creating user profile:", error);
+    }
   };
 
   const googleSignIn = () => {
@@ -97,7 +133,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await firebaseAuth.signOut();
-    navigate("/");
   };
 
   return (
@@ -105,6 +140,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         firebaseUser,
         appUser,
+        loading,
         signIn,
         signUp,
         googleSignIn,
@@ -119,4 +155,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   return useContext(AuthContext)!;
+}
+
+export function PrivateRoute() {
+  const { appUser, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="w-screen min-h-screen flex justify-center items-center">
+        <Loader variant="secondary" />
+      </div>
+    );
+  }
+
+  return appUser ? <Outlet /> : <Navigate to="/sign-in" replace />;
 }

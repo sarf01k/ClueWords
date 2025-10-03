@@ -8,7 +8,7 @@ import { useState } from "react";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Loader } from "@/components/retroui/Loader";
 
@@ -22,6 +22,7 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmittingForm, setIsSubmittingForm] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const {
     register,
@@ -41,6 +42,7 @@ export default function SignIn() {
 
     try {
       await signIn(values.email, values.password);
+      navigate("/home");
     } catch (error) {
       setIsSubmittingForm(false);
       setError(`${error}`);
@@ -50,9 +52,11 @@ export default function SignIn() {
   return (
     <div className="h-screen p-4">
       <div className="h-full max-w-5xl mx-auto flex flex-col justify-center">
-        <Link to={"/"}>
-          <HeroText size="90px" />
-        </Link>
+        <div className="flex justify-center">
+          <Link to={"/"} className="inline-block">
+            <HeroText size="90px" />
+          </Link>
+        </div>
         <div className="h-fit mx-auto max-w-md border-2 bg-card mt-6">
           <div className="grid grid-cols-1 bg-amber-300 p-6">
             <Text as="h3">Sign In</Text>

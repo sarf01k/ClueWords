@@ -7,7 +7,7 @@ import { Menu } from "@/components/retroui/Menu";
 import { useAuth } from "@/context/AuthContext";
 
 export default function Home() {
-  const { signOut } = useAuth();
+  const { appUser, signOut } = useAuth();
 
   const logOut = async () => {
     try {
@@ -23,7 +23,7 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           <div className="gap-2 flex justify-end items-end">
             <Text as="h5" className="text-white custom-shadow">
-              sarf01k
+              {appUser?.username}
             </Text>
             <Menu>
               <Menu.Trigger asChild>
@@ -57,22 +57,22 @@ export default function Home() {
           </div>
         </div>
       </header>
-      <div className="flex-1 max-w-5xl mx-auto">
-        <main className="h-full flex flex-col justify-center items-center">
-          <div className="fade py-20 px-24 md:px-32">
-            <HeroText />
+      <div className="flex-1 flex justify-center items-center">
+        <main className="max-w-5xl mx-auto flex flex-col justify-center items-center p-10 bg-white border-2">
+          <HeroText />
+          <div className="flex flex-col items-center gap-4 mt-8">
+            <Button size={"md"}>
+              <Play className="mr-2" size={20} />
+              PLAY
+            </Button>
+            <Button>
+              <Trophy className="mr-2" size={20} />
+              LEADERBOARD
+            </Button>
+            <Button className="text-outlined" variant="link">
+              HOW TO PLAY?
+            </Button>
           </div>
-          <Button size={"md"}>
-            <Play className="mr-2" size={20} />
-            PLAY
-          </Button>
-          <Button className="my-4">
-            <Trophy className="mr-2" size={20} />
-            LEADERBOARD
-          </Button>
-          <Button className="text-outlined" variant="link">
-            HOW TO PLAY?
-          </Button>
         </main>
       </div>
     </div>
