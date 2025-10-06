@@ -5,9 +5,11 @@ import Avatar from "boring-avatars";
 import { Text } from "@/components/retroui/Text";
 import { Menu } from "@/components/retroui/Menu";
 import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const { appUser, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const logOut = async () => {
     try {
@@ -22,7 +24,7 @@ export default function Home() {
       <header className="bg-primary py-4 px-2 border-b-2">
         <div className="max-w-5xl mx-auto">
           <div className="gap-2 flex justify-end items-end">
-            <Text as="h5" className="text-white custom-shadow">
+            <Text as="h4" className="text-white custom-shadow">
               {appUser?.username}
             </Text>
             <Menu>
@@ -61,13 +63,13 @@ export default function Home() {
         <main className="max-w-5xl mx-auto flex flex-col justify-center items-center p-10 bg-white border-2">
           <HeroText />
           <div className="flex flex-col items-center gap-4 mt-8">
-            <Button size={"md"}>
+            <Button size={"md"} onClick={() => navigate("/play")}>
               <Play className="mr-2" size={20} />
               PLAY
             </Button>
             <Button>
               <Trophy className="mr-2" size={20} />
-              LEADERBOARD
+              SCOREBOARD
             </Button>
             <Button className="text-outlined" variant="link">
               HOW TO PLAY?

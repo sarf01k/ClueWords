@@ -42,6 +42,8 @@ export default function SignIn() {
 
     try {
       await signIn(values.email, values.password);
+      console.log("lobos");
+
       navigate("/home");
     } catch (error) {
       setIsSubmittingForm(false);
@@ -85,7 +87,7 @@ export default function SignIn() {
                     {...register("email")}
                   />
                   {errors.email && (
-                    <span className="text-red-800">{errors.email.message}</span>
+                    <span className="text-red-600">{errors.email.message}</span>
                   )}
                 </div>
                 <div className="space-y-2">
@@ -114,7 +116,7 @@ export default function SignIn() {
                     </button>
                   </div>
                   {errors.password && (
-                    <span className="mt-4 text-red-800">
+                    <span className="mt-4 text-red-600">
                       {errors.password.message}
                     </span>
                   )}

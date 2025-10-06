@@ -15,7 +15,7 @@ const buttonVariants = cva(
         secondary:
           "shadow-md hover:shadow-none bg-secondary shadow-primary text-secondary-foreground border-2 border-black transition hover:translate-y-1",
         outline:
-          "shadow-md hover:shadow-none bg-transparent border-2 transition hover:translate-y-1",
+          "shadow-md hover:shadow-none bg-white border-2 transition hover:translate-y-1",
         link: "bg-transparent hover:underline",
       },
       size: {

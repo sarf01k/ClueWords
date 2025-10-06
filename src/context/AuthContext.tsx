@@ -64,14 +64,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } catch (error) {
           console.error("Error fetching user profile:", error);
           setAppUser(null);
-        } finally {
-          setLoading(false);
         }
       } else {
         setAppUser(null);
       }
-      setFirebaseUser(user);
 
+      setFirebaseUser(user);
       setLoading(false);
     });
 
@@ -79,7 +77,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    await signInWithEmailAndPassword(firebaseAuth, email, password);
+    const userCred = await signInWithEmailAndPassword(
+      firebaseAuth,
+      email,
+      password
+    );
+    setFirebaseUser(userCred.user);
   };
 
   const signUp = async (email: string, password: string, username: string) => {
@@ -117,7 +120,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setAppUser(newUser);
     } catch (error) {
       await userCred.user.delete();
-      console.error("Error creating user profile:", error);
+      throw error;
     }
   };
 
@@ -158,7 +161,7 @@ export function useAuth() {
 }
 
 export function PrivateRoute() {
-  const { appUser, loading } = useAuth();
+  const { firebaseUser, loading } = useAuth();
 
   if (loading) {
     return (
@@ -168,5 +171,5 @@ export function PrivateRoute() {
     );
   }
 
-  return appUser ? <Outlet /> : <Navigate to="/sign-in" replace />;
+  return firebaseUser ? <Outlet /> : <Navigate to="/sign-in" replace />;
 }

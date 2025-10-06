@@ -53,7 +53,7 @@ export default function ForgotPassword() {
                     {...register("email")}
                   />
                   {errors.email && (
-                    <span className="text-red-500">{errors.email.message}</span>
+                    <span className="text-red-600">{errors.email.message}</span>
                   )}
                 </div>
               </div>

@@ -124,7 +124,7 @@ export default function SignUp() {
                       </button>
                     </div>
                     {errors.password && (
-                      <span className="mt-4 text-red-800">
+                      <span className="mt-4 text-red-600">
                         {errors.password.message}
                       </span>
                     )}
@@ -139,7 +139,7 @@ export default function SignUp() {
                     {...register("username")}
                   />
                   {errors.username && (
-                    <span className="mt-4 text-red-800">
+                    <span className="mt-4 text-red-600">
                       {errors.username.message}
                     </span>
                   )}

@@ -5,6 +5,7 @@ import SignUp from "./pages/auth/Sign-Up";
 import ForgotPassword from "./pages/auth/Forgot-Password";
 import Root from "./pages/home/Root";
 import { PrivateRoute } from "./context/AuthContext";
+import Play from "./pages/quiz/Play";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
 
       <Route element={<PrivateRoute />}>
         <Route path="/home" element={<Home />} />
+        <Route path="/play" element={<Play />} />
         <Route path="/profile" element={<div>Profile page</div>} />
       </Route>
     </Routes>
