@@ -6,6 +6,7 @@ import ForgotPassword from "./pages/auth/Forgot-Password";
 import Root from "./pages/home/Root";
 import { PrivateRoute } from "./context/AuthContext";
 import Play from "./pages/quiz/Play";
+import Results from "./pages/quiz/Results";
 
 function App() {
   return (
@@ -17,9 +18,14 @@ function App() {
 
       <Route element={<PrivateRoute />}>
         <Route path="/home" element={<Home />} />
-        <Route path="/play" element={<Play />} />
+        <Route path="/play">
+          <Route path=":quizId" element={<Play />} />
+        </Route>
+        <Route path="/results" element={<Results />} />
         <Route path="/profile" element={<div>Profile page</div>} />
       </Route>
+
+      <Route path="*" element={<div>404 | Not Found</div>} />
     </Routes>
   );
 }

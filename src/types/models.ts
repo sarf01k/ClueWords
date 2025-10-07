@@ -4,6 +4,6 @@ export type User = {
   email: string;
   username: string;
   currentScore: number | null;
-  lastPlayed: string | null;
+  quizCount: number;
   createdAt: FieldValue;
 };

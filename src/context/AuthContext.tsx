@@ -101,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: userCred.user.email!,
       username,
       currentScore: null,
-      lastPlayed: null,
+      quizCount: 0,
       createdAt: serverTimestamp(),
     };
 

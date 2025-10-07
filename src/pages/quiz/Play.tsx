@@ -5,26 +5,27 @@ import { Input } from "@/components/retroui/Input";
 import { useQuiz } from "@/zustand/store";
 import { useEffect, useState } from "react";
 import { Loader } from "@/components/retroui/Loader";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Dialog } from "@/components/retroui/Dialog";
 
 export default function Play() {
+  const { quizId } = useParams();
   const navigate = useNavigate();
-  const { loading, fetchQuiz, quiz, activeQuestion, score, submitAnswer } =
+  const { loading, fetchQuiz, quiz, activeQuestion, submitAnswer, resetQuiz } =
     useQuiz();
   const [answer, setAnswer] = useState("");
 
   useEffect(() => {
-    fetchQuiz();
-  }, [fetchQuiz]);
+    fetchQuiz(quizId!).catch(() => navigate("/not-found"));
+  }, [fetchQuiz, quizId, navigate]);
 
   const question = quiz[activeQuestion];
 
   const handleSubmit = () => {
     if (!question) return;
     const isCorrect =
-      question.answer.trim().toLowerCase() === question.answer.toLowerCase();
-    submitAnswer(isCorrect, 3);
+      answer.trim().toLowerCase() === question.answer.toLowerCase();
+    submitAnswer(isCorrect, 3, answer);
     setAnswer("");
   };
 
@@ -36,10 +37,10 @@ export default function Play() {
     );
   }
 
-  if (!quiz.length) return <p className="">No quiz available.</p>;
+  if (!quiz.length || !question) return <p className="">No quiz available.</p>;
 
   return (
-    <div className="h-screen flex flex-col justify-center items-center home-bg">
+    <div className="min-h-[100dvh] flex flex-col justify-center items-center home-bg">
       <main className="max-w-sm w-full px-4 mx-auto flex flex-col justify-center items-center">
         <div className="w-full flex justify-between items-end">
           <Dialog>
@@ -52,7 +53,7 @@ export default function Play() {
                 <ArrowLeft />
               </Button>
             </Dialog.Trigger>
-            <Dialog.Content>
+            <Dialog.Content className="w-11/12 md:w-sm" size="sm">
               <Dialog.Header>
                 <Text as="h5">Stop playing?</Text>
               </Dialog.Header>
@@ -62,20 +63,19 @@ export default function Play() {
                 </section>
                 <section className="flex w-full justify-end">
                   <Dialog.Trigger asChild>
-                    <Button onClick={() => navigate(-1)}>Confirm</Button>
+                    <Button
+                      onClick={() => {
+                        resetQuiz();
+                        navigate(-1);
+                      }}
+                    >
+                      Confirm
+                    </Button>
                   </Dialog.Trigger>
                 </section>
               </section>
             </Dialog.Content>
           </Dialog>
-          {/* <Button
-            size="icon"
-            variant="outline"
-            className="hover:bg-red-600"
-            onClick={() => navigate(-1)}
-          >
-            <ArrowLeft />
-          </Button> */}
           <div className="bg-white border-2 flex justify-center items-center px-2 py-1">
             <Text as="h4">
               {activeQuestion + 1}/{quiz.length}
@@ -92,11 +92,17 @@ export default function Play() {
             placeholder="Your answer"
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
-            autoFocus
           ></Input>
           <Button
             className="w-full flex items-center justify-center gap-1"
-            onClick={handleSubmit}
+            onClick={() => {
+              if (activeQuestion < quiz.length - 1) {
+                handleSubmit();
+              } else {
+                handleSubmit();
+                navigate("/results");
+              }
+            }}
           >
             {activeQuestion === quiz.length - 1 ? (
               "Finish"
