@@ -1,6 +1,7 @@
 import { ref, get as getFromFirebase, child } from "firebase/database";
-import { realDB } from "@/config/firebase";
+import { db, realDB } from "@/config/firebase";
 import { create } from "zustand";
+import { doc, updateDoc } from "@firebase/firestore";
 
 interface QuizQuestion {
   question: string;
@@ -25,12 +26,13 @@ interface QuizState {
   submitAnswer: (
     isCorrect: boolean,
     points: number,
-    userAnswer: string
-  ) => void;
+    userAnswer: string,
+    userId: string
+  ) => Promise<void>;
   resetQuiz: () => void;
 }
 
-export const useQuiz = create<QuizState>((set) => ({
+export const useQuiz = create<QuizState>((set, get) => ({
   loading: false,
   quiz: [],
   fetchQuiz: async (quizId: string) => {
@@ -38,8 +40,6 @@ export const useQuiz = create<QuizState>((set) => ({
     const dbRef = ref(realDB);
     const snapshot = await getFromFirebase(child(dbRef, "/"));
     if (snapshot.exists()) {
-      console.log(snapshot.val());
-
       set({ quiz: snapshot.val()[quizId].quiz, loading: false });
     } else {
       set({ quiz: [], loading: false });
@@ -50,38 +50,35 @@ export const useQuiz = create<QuizState>((set) => ({
   score: 0,
   isCompleted: false,
 
-  // submitAnswer: (isCorrect: boolean, points: number) => {
+  submitAnswer: async (
+    isCorrect: boolean,
+    points: number,
+    userAnswer: string,
+    userId: string
+  ) => {
+    const { quiz, activeQuestion, score, answers } = get();
+    const correctAnswer = quiz[activeQuestion].answer;
+    const nextQuestion = activeQuestion + 1;
 
-  //   const { activeQuestion, quiz } = get();
-  //   const next = activeQuestion + 1;
+    set({
+      answers: [
+        ...answers,
+        {
+          correctAnswer,
+          userAnswer: userAnswer ? userAnswer : "[No answer]",
+          isCorrect,
+        },
+      ],
+      score: isCorrect ? score + points : score,
+      activeQuestion: nextQuestion,
+      isCompleted: nextQuestion >= quiz.length,
+    });
 
-  //   set((s: { score: number; activeQuestion: number }) => ({
-  //     answers: [answers.push(),]
-  //     score: isCorrect ? s.score + points : s.score,
-  //     activeQuestion: next,
-  //     isCompleted: next >= quiz.length,
-  //   }));
-  // },
-
-  submitAnswer: (isCorrect: boolean, points: number, userAnswer: string) =>
-    set((state) => {
-      const correctAnswer = state.quiz[state.activeQuestion].answer;
-      const nextQuestion = state.activeQuestion + 1;
-
-      return {
-        answers: [
-          ...state.answers,
-          {
-            correctAnswer,
-            userAnswer: userAnswer ? userAnswer : "[No answer]",
-            isCorrect,
-          },
-        ],
-        score: isCorrect ? state.score + points : state.score,
-        activeQuestion: nextQuestion,
-        isCompleted: nextQuestion >= state.quiz.length,
-      };
-    }),
+    if (activeQuestion === quiz.length - 1) {
+      const userRef = doc(db, "users", userId);
+      await updateDoc(userRef, { currentScore: score });
+    }
+  },
 
   resetQuiz: () =>
     set({

@@ -55,7 +55,7 @@ export default function SignIn() {
     <div className="h-screen p-4">
       <div className="h-full max-w-5xl mx-auto flex flex-col justify-center">
         <div className="flex justify-center">
-          <Link to={"/"} className="inline-block">
+          <Link to={"/home"} className="inline-block">
             <HeroText size="90px" />
           </Link>
         </div>

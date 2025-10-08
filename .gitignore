@@ -9,6 +9,8 @@ lerna-debug.log*
 firebase-debug.log*
 
 node_modules
+src/data
+functions
 dist
 dist-ssr
 *.local

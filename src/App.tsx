@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/home/Home";
 import SignIn from "./pages/auth/Sign-In";
 import SignUp from "./pages/auth/Sign-Up";
@@ -19,6 +19,7 @@ function App() {
       <Route element={<PrivateRoute />}>
         <Route path="/home" element={<Home />} />
         <Route path="/play">
+          <Route index element={<Navigate to="/home" replace />} />
           <Route path=":quizId" element={<Play />} />
         </Route>
         <Route path="/results" element={<Results />} />

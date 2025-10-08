@@ -57,8 +57,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (snap.exists()) {
             setAppUser(snap.data() as AppUser);
           } else {
-            console.log("non bro");
-
             setAppUser(null);
           }
         } catch (error) {

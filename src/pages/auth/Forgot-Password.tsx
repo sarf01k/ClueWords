@@ -29,7 +29,7 @@ export default function ForgotPassword() {
   return (
     <div className="h-screen p-4">
       <div className="h-full max-w-5xl mx-auto flex flex-col justify-center">
-        <Link to={"/"}>
+        <Link to={"/home"}>
           <HeroText size="90px" />
         </Link>
         <div className="h-fit mx-auto max-w-md border-2 bg-card mt-6">

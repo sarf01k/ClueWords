@@ -4,7 +4,7 @@ import HeroText from "../../components/Hero-Text.component";
 import { Text } from "@/components/retroui/Text";
 import { Menu } from "@/components/retroui/Menu";
 import { useAuth } from "@/context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AvatarPFP from "./../../components/Avatar";
 
 export default function Home() {
@@ -22,7 +22,10 @@ export default function Home() {
   return (
     <div className="min-h-[100dvh] flex flex-col home-bg">
       <header className="bg-primary py-4 px-2 border-b-2">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto flex justify-between">
+          <Link to={"/home"}>
+            <HeroText size="90px" />
+          </Link>
           <div className="gap-2 flex justify-end items-end">
             <Text as="h4" className="text-white custom-shadow">
               {appUser?.username}

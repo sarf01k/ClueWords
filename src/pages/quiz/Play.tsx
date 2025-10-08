@@ -7,8 +7,10 @@ import { useEffect, useState } from "react";
 import { Loader } from "@/components/retroui/Loader";
 import { useNavigate, useParams } from "react-router-dom";
 import { Dialog } from "@/components/retroui/Dialog";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Play() {
+  const { firebaseUser } = useAuth();
   const { quizId } = useParams();
   const navigate = useNavigate();
   const { loading, fetchQuiz, quiz, activeQuestion, submitAnswer, resetQuiz } =
@@ -25,7 +27,7 @@ export default function Play() {
     if (!question) return;
     const isCorrect =
       answer.trim().toLowerCase() === question.answer.toLowerCase();
-    submitAnswer(isCorrect, 3, answer);
+    submitAnswer(isCorrect, 3, answer, firebaseUser!.uid);
     setAnswer("");
   };
 
