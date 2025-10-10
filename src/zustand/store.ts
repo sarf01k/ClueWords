@@ -1,11 +1,16 @@
 import { ref, get as getFromFirebase, child } from "firebase/database";
 import { db, realDB } from "@/config/firebase";
 import { create } from "zustand";
-import { doc, updateDoc } from "@firebase/firestore";
+import { doc, getDoc, updateDoc } from "@firebase/firestore";
 
-interface QuizQuestion {
+interface Question {
   question: string;
   answer: string;
+  image: string;
+}
+
+interface Challenge {
+  questions: Question[];
   image?: string;
 }
 
@@ -15,36 +20,57 @@ interface Answer {
   isCorrect: boolean;
 }
 
-interface QuizState {
+interface ChallengeState {
   loading: boolean;
-  quiz: QuizQuestion[];
+  challenges: object;
+  challenge: Challenge | null;
   answers: Answer[];
   activeQuestion: number;
   score: number;
   isCompleted: boolean;
-  fetchQuiz: (quizId: string) => Promise<void>;
+  fetchChallenges: () => Promise<void>;
+  fetchChallenge: (challengeId: string) => Promise<void>;
   submitAnswer: (
     isCorrect: boolean,
     points: number,
     userAnswer: string,
-    userId: string
+    userId: string,
+    quizId: string
   ) => Promise<void>;
   resetQuiz: () => void;
 }
 
-export const useQuiz = create<QuizState>((set, get) => ({
+export const useChallenges = create<ChallengeState>((set, get) => ({
   loading: false,
-  quiz: [],
-  fetchQuiz: async (quizId: string) => {
+  challenges: {},
+  challenge: null,
+
+  async fetchChallenges() {
     set({ loading: true });
     const dbRef = ref(realDB);
-    const snapshot = await getFromFirebase(child(dbRef, "/"));
-    if (snapshot.exists()) {
-      set({ quiz: snapshot.val()[quizId].quiz, loading: false });
+    const challenges = await getFromFirebase(child(dbRef, "challenge"));
+    if (challenges.exists()) {
+      set({ challenges: challenges.val(), loading: false });
     } else {
-      set({ quiz: [], loading: false });
+      set({ challenges: [], loading: false });
     }
   },
+
+  async fetchChallenge(challengeId: string) {
+    set({ loading: true });
+    const dbRef = ref(realDB);
+    const challenge = await getFromFirebase(
+      child(dbRef, `challenge/${challengeId}`)
+    );
+    if (challenge.exists()) {
+      console.log(challenge.val());
+
+      set({ challenge: challenge.val(), loading: false });
+    } else {
+      set({ challenge: null, loading: false });
+    }
+  },
+
   answers: [],
   activeQuestion: 0,
   score: 0,
@@ -54,10 +80,11 @@ export const useQuiz = create<QuizState>((set, get) => ({
     isCorrect: boolean,
     points: number,
     userAnswer: string,
-    userId: string
+    userId: string,
+    challengeId: string
   ) => {
-    const { quiz, activeQuestion, score, answers } = get();
-    const correctAnswer = quiz[activeQuestion].answer;
+    const { challenge, activeQuestion, score, answers } = get();
+    const correctAnswer = challenge!.questions[activeQuestion].answer;
     const nextQuestion = activeQuestion + 1;
 
     set({
@@ -71,18 +98,27 @@ export const useQuiz = create<QuizState>((set, get) => ({
       ],
       score: isCorrect ? score + points : score,
       activeQuestion: nextQuestion,
-      isCompleted: nextQuestion >= quiz.length,
+      isCompleted: nextQuestion >= challenge!.questions.length,
     });
 
-    if (activeQuestion === quiz.length - 1) {
+    if (activeQuestion === challenge!.questions.length - 1) {
       const userRef = doc(db, "users", userId);
-      await updateDoc(userRef, { currentScore: score });
+      const user = await getDoc(userRef);
+
+      if (!user.data()!.playedChallenges.includes(challengeId)) {
+        await updateDoc(userRef, {
+          [`playedChallenges.${challengeId}`]: {
+            score: score,
+          },
+          currentScore: user.data()!.currentScore + score,
+        });
+      }
     }
   },
 
   resetQuiz: () =>
     set({
-      quiz: [],
+      challenge: null,
       answers: [],
       activeQuestion: 0,
       score: 0,

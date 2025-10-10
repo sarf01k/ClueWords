@@ -4,14 +4,14 @@ import { useAuth } from "@/context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/retroui/Button";
 import { Text } from "@/components/retroui/Text";
-import { useQuiz } from "@/zustand/store";
+import { useChallenges } from "@/zustand/store";
 import { useEffect } from "react";
 import { Dialog } from "@/components/retroui/Dialog";
 
 export default function Results() {
   const navigate = useNavigate();
   const { appUser } = useAuth();
-  const { score, isCompleted, resetQuiz, answers } = useQuiz();
+  const { score, isCompleted, resetQuiz, answers } = useChallenges();
 
   useEffect(() => {
     if (!isCompleted) {
@@ -32,6 +32,7 @@ export default function Results() {
         <p className="text-black font-extrabold text-3xl">{score} points</p>
         <div className="flex gap-4">
           <Button
+            size={"md"}
             onClick={() => {
               resetQuiz();
               navigate("/home");
@@ -40,6 +41,7 @@ export default function Results() {
             Menu
           </Button>
           <Button
+            size={"md"}
             onClick={() => {
               // resetQuiz();
               // navigate("/home");
@@ -49,7 +51,7 @@ export default function Results() {
           </Button>
           <Dialog>
             <Dialog.Trigger asChild>
-              <Button>Play Again</Button>
+              <Button size={"md"}>Play Again</Button>
             </Dialog.Trigger>
             <Dialog.Content className="w-11/12 md:w-sm" size="sm">
               <Dialog.Header>
@@ -75,7 +77,7 @@ export default function Results() {
             </Dialog.Content>
           </Dialog>
         </div>
-        {answers.map((ans, i) => (
+        {answers.map((ans) => (
           <div>
             <p>{ans.correctAnswer}</p>
             <p>{ans.userAnswer}</p>

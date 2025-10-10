@@ -42,8 +42,6 @@ export default function SignIn() {
 
     try {
       await signIn(values.email, values.password);
-      console.log("lobos");
-
       navigate("/home");
     } catch (error) {
       setIsSubmittingForm(false);
@@ -52,15 +50,15 @@ export default function SignIn() {
   };
 
   return (
-    <div className="h-screen p-4">
+    <div className="h-screen p-4 home-bg">
       <div className="h-full max-w-5xl mx-auto flex flex-col justify-center">
-        <div className="flex justify-center">
-          <Link to={"/home"} className="inline-block">
-            <HeroText size="90px" />
-          </Link>
-        </div>
-        <div className="h-fit mx-auto max-w-md border-2 bg-card mt-6">
-          <div className="grid grid-cols-1 bg-amber-300 p-6">
+        <div className="h-fit mx-auto max-w-md border-4 bg-card mt-6">
+          <div className="bg-amber-300 p-6">
+            <div className="flex justify-center mb-4">
+              <Link to={"/home"} className="inline-block">
+                <HeroText size="90px" />
+              </Link>
+            </div>
             <Text as="h3">Sign In</Text>
             <p className="font-sans text-sm">
               Welcome back! Enter your details to access your account.
@@ -70,7 +68,7 @@ export default function SignIn() {
             {error && (
               <div className="mb-5 bg-red-300 rounded-md px-5 py-2 text-red-800 border-2 border-red-800 flex items-center gap-2">
                 <span>
-                  <CircleAlert />
+                  <CircleAlert size={20} />
                 </span>
                 <p>{error}</p>
               </div>

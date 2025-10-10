@@ -61,15 +61,15 @@ export default function SignUp() {
   };
 
   return (
-    <div className="h-screen p-4">
+    <div className="h-screen p-4 home-bg">
       <div className="h-full max-w-5xl mx-auto flex flex-col justify-center">
-        <div className="flex justify-center">
-          <Link to={"/home"} className="inline-block">
-            <HeroText size="90px" />
-          </Link>
-        </div>
-        <div className="h-fit mx-auto md:w-2xl border-2 bg-card mt-6">
-          <div className="grid grid-cols-1 bg-amber-300 p-6">
+        <div className="h-fit mx-auto md:w-2xl border-4 bg-card mt-6">
+          <div className="bg-amber-300 p-6">
+            <div className="flex justify-center mb-4">
+              <Link to={"/home"} className="inline-block">
+                <HeroText size="90px" />
+              </Link>
+            </div>
             <Text as="h3">Sign Up</Text>
             <p className="font-sans text-sm">
               New here? Enter your details to sign up.
