@@ -6,6 +6,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
+  updatePassword,
   type User as FirebaseUser,
   type UserCredential,
 } from "firebase/auth";
@@ -22,6 +23,7 @@ import {
   getDoc,
   runTransaction,
   serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
 import type { User as AppUser } from "@/types/models";
 import { Navigate, Outlet } from "react-router-dom";
@@ -35,6 +37,7 @@ type AuthContextType = {
   signUp: (email: string, password: string, username: string) => Promise<void>;
   googleSignIn: () => Promise<UserCredential>;
   githubSignIn: () => Promise<UserCredential>;
+  updateAccount: (username: string, newPassword: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -60,8 +63,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setAppUser(null);
           }
         } catch (error) {
-          console.error("Error fetching user profile:", error);
           setAppUser(null);
+          throw error;
         }
       } else {
         setAppUser(null);
@@ -137,6 +140,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await firebaseAuth.signOut();
   };
 
+  const updateAccount = async (username: string, newPassword: string) => {
+    const userRef = doc(db, "users", firebaseUser!.uid);
+    await updateDoc(userRef, {
+      username,
+    });
+
+    const user = await getDoc(userRef);
+    setAppUser(user.data() as AppUser);
+    console.log(appUser);
+
+    if (newPassword) {
+      await updatePassword(firebaseUser!, newPassword);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -147,6 +165,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         signUp,
         googleSignIn,
         githubSignIn,
+        updateAccount,
         signOut,
       }}
     >

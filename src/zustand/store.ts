@@ -63,8 +63,6 @@ export const useChallenges = create<ChallengeState>((set, get) => ({
       child(dbRef, `challenge/${challengeId}`)
     );
     if (challenge.exists()) {
-      console.log(challenge.val());
-
       set({ challenge: challenge.val(), loading: false });
     } else {
       set({ challenge: null, loading: false });
@@ -105,12 +103,13 @@ export const useChallenges = create<ChallengeState>((set, get) => ({
       const userRef = doc(db, "users", userId);
       const user = await getDoc(userRef);
 
-      if (!user.data()!.playedChallenges.includes(challengeId)) {
+      if (!user.data()?.playedChallenges?.[challengeId]) {
         await updateDoc(userRef, {
           [`playedChallenges.${challengeId}`]: {
-            score: score,
+            score,
           },
           currentScore: user.data()!.currentScore + score,
+          challengesCount: user.data()!.challengesCount + 1,
         });
       }
     }

@@ -92,7 +92,7 @@ export default function Play() {
             </Text>
           </div>
         </div>
-        <div className="w-full bg-white p-6 border-2 mt-2 space-y-6">
+        <div className="w-full bg-white p-6 border-4 mt-2 space-y-6">
           <Text as="h4" className="text-center">
             What is this puzzle saying?
           </Text>

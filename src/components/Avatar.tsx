@@ -6,12 +6,12 @@ interface AvatarPFPProps {
 }
 
 export default function AvatarPFP({ size }: AvatarPFPProps) {
-  const { appUser } = useAuth();
+  const { firebaseUser } = useAuth();
 
   return (
     <Avatar
       className="border-2 rounded-full cursor-pointer"
-      name={appUser?.email}
+      name={firebaseUser!.email!}
       variant="beam"
       colors={[
         "#92A1C6",

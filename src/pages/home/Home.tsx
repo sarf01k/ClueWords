@@ -26,7 +26,7 @@ export default function Home() {
 
   return (
     <div className="min-h-[100dvh] flex flex-col">
-      <Header></Header>
+      <Header />
       <div className="flex-1 flex flex-col">
         {loading ? (
           <div className="flex-1 w-full flex justify-center items-center">
@@ -71,8 +71,10 @@ export default function Home() {
                 );
               })}
             </main>
-            <div className="border-2 bg-white max-w-3xl mx-auto text-center my-16 py-8">
-              <Text as="h5">more challenges soon...</Text>
+            <div className="flex justify-center my-16">
+              <div className="border-2 bg-white w-2/3 text-center py-8 px-4">
+                <Text as="h5">more challenges soon...</Text>
+              </div>
             </div>
           </div>
         )}

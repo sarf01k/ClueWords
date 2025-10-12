@@ -38,6 +38,7 @@ export default function SignUp() {
     defaultValues: {
       email: "",
       password: "",
+      username: "",
     },
   });
 
@@ -53,7 +54,6 @@ export default function SignUp() {
       );
       navigate("/home");
     } catch (error) {
-      setIsSubmittingForm(false);
       setError(`${error}`);
     } finally {
       setIsSubmittingForm(false);
