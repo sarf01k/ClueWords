@@ -23,7 +23,7 @@ const formSchema = z.object({
     .or(z.literal("")),
 });
 
-export default function Profile() {
+export default function Account() {
   const { appUser, updateAccount } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmittingForm, setIsSubmittingForm] = useState(false);

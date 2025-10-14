@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useChallenges } from "@/zustand/store";
 import { Loader } from "@/components/retroui/Loader";
 import Header from "./../../components/Header";
+import PlayAgainDialog from "@/components/Play-Again-Dialog";
 
 export default function Home() {
   const { appUser } = useAuth();
@@ -15,14 +16,6 @@ export default function Home() {
   useEffect(() => {
     fetchChallenges();
   }, [fetchChallenges]);
-
-  // const logOut = async () => {
-  //   try {
-  //     await signOut();
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   return (
     <div className="min-h-[100dvh] flex flex-col">
@@ -59,13 +52,23 @@ export default function Home() {
                         <p>Challenge #{challenge.no}</p>
                         <p>Score: {hasPlayed ? score : "-"}</p>
                       </div>
-                      <Button
-                        size="sm"
-                        variant={hasPlayed ? "outline" : "default"}
-                        onClick={() => navigate(`/play?challenge=${id}`)}
-                      >
-                        {hasPlayed ? "Replay" : id}
-                      </Button>
+                      {hasPlayed ? (
+                        <PlayAgainDialog
+                          trigger={
+                            <Button size="sm" variant="outline">
+                              Replay
+                            </Button>
+                          }
+                          onConfirm={() => navigate(`/play?challenge=${id}`)}
+                        />
+                      ) : (
+                        <Button
+                          size="sm"
+                          onClick={() => navigate(`/play?challenge=${id}`)}
+                        >
+                          Play
+                        </Button>
+                      )}
                     </div>
                   </div>
                 );

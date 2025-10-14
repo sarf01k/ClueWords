@@ -11,6 +11,7 @@ interface Question {
 
 interface Challenge {
   questions: Question[];
+  no: number;
   image?: string;
 }
 
@@ -22,7 +23,7 @@ interface Answer {
 
 interface ChallengeState {
   loading: boolean;
-  challenges: object;
+  challenges: Record<string, Challenge>;
   challenge: Challenge | null;
   answers: Answer[];
   activeQuestion: number;
@@ -35,7 +36,8 @@ interface ChallengeState {
     points: number,
     userAnswer: string,
     userId: string,
-    quizId: string
+    quizId: string,
+    refreshAppUser: (uid: string) => Promise<void>
   ) => Promise<void>;
   resetQuiz: () => void;
 }
@@ -52,7 +54,7 @@ export const useChallenges = create<ChallengeState>((set, get) => ({
     if (challenges.exists()) {
       set({ challenges: challenges.val(), loading: false });
     } else {
-      set({ challenges: [], loading: false });
+      set({ challenges: {}, loading: false });
     }
   },
 
@@ -79,7 +81,8 @@ export const useChallenges = create<ChallengeState>((set, get) => ({
     points: number,
     userAnswer: string,
     userId: string,
-    challengeId: string
+    challengeId: string,
+    refreshAppUser: (uid: string) => Promise<void>
   ) => {
     const { challenge, activeQuestion, score, answers } = get();
     const correctAnswer = challenge!.questions[activeQuestion].answer;
@@ -111,6 +114,7 @@ export const useChallenges = create<ChallengeState>((set, get) => ({
           currentScore: user.data()!.currentScore + score,
           challengesCount: user.data()!.challengesCount + 1,
         });
+        refreshAppUser(userId);
       }
     }
   },

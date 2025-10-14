@@ -12,7 +12,7 @@ import { useAuth } from "@/context/AuthContext";
 export default function Play() {
   const [searchParams] = useSearchParams();
   const challengeId = searchParams.get("challenge");
-  const { firebaseUser } = useAuth();
+  const { firebaseUser, refreshAppUser } = useAuth();
   const navigate = useNavigate();
   const {
     loading,
@@ -25,7 +25,9 @@ export default function Play() {
   const [answer, setAnswer] = useState("");
 
   useEffect(() => {
-    fetchChallenge(challengeId!).catch(() => navigate("/not-found"));
+    if (challengeId) {
+      fetchChallenge(challengeId!).catch(() => navigate("/not-found"));
+    }
   }, [fetchChallenge, challengeId, navigate]);
 
   const question = challenge?.questions[activeQuestion];
@@ -34,7 +36,14 @@ export default function Play() {
     if (!question) return;
     const isCorrect =
       answer.trim().toLowerCase() === question.answer.toLowerCase();
-    submitAnswer(isCorrect, 3, answer, firebaseUser!.uid, challengeId!);
+    submitAnswer(
+      isCorrect,
+      3,
+      answer,
+      firebaseUser!.uid,
+      challengeId!,
+      refreshAppUser
+    );
     setAnswer("");
   };
 
@@ -46,8 +55,7 @@ export default function Play() {
     );
   }
 
-  if (!challenge?.questions.length || !question)
-    return <p className="">No quiz available.</p>;
+  if (!question) return <p className="">No quiz available.</p>;
 
   return (
     <div className="min-h-[100dvh] flex flex-col justify-center items-center home-bg">
@@ -96,7 +104,9 @@ export default function Play() {
           <Text as="h4" className="text-center">
             What is this puzzle saying?
           </Text>
-          <div className="bg-[#ebe6e7] border-2 p-6">{question.image}</div>
+          <div className="bg-[#ebe6e7] border-2">
+            <img src={question.image} alt="" height={200} />
+          </div>
           <Input
             type="text"
             placeholder="Your answer"

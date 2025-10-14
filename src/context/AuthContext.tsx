@@ -32,6 +32,7 @@ import { Loader } from "@/components/retroui/Loader";
 type AuthContextType = {
   firebaseUser: FirebaseUser | null;
   appUser: AppUser | null;
+  refreshAppUser: (uid: string) => Promise<void>;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, username: string) => Promise<void>;
@@ -55,13 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (user) {
         // Load Firestore user profile if exists
         try {
-          const ref = doc(db, "users", user.uid);
-          const snap = await getDoc(ref);
-          if (snap.exists()) {
-            setAppUser(snap.data() as AppUser);
-          } else {
-            setAppUser(null);
-          }
+          refreshAppUser(user.uid);
         } catch (error) {
           setAppUser(null);
           throw error;
@@ -76,6 +71,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return unsubscribe;
   }, []);
+
+  const refreshAppUser = async (uid: string) => {
+    const ref = doc(db, "users", uid);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      setAppUser(snap.data() as AppUser);
+    } else {
+      setAppUser(null);
+    }
+  };
 
   const signIn = async (email: string, password: string) => {
     const userCred = await signInWithEmailAndPassword(
@@ -160,6 +165,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       value={{
         firebaseUser,
         appUser,
+        refreshAppUser,
         loading,
         signIn,
         signUp,

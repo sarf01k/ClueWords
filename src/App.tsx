@@ -24,6 +24,7 @@ function App() {
           <Route path="/play" element={<Play />} />
           <Route path="/results" element={<Results />} />
           <Route path="/account" element={<Account />} />
+          <Route path="/scoreboard" element={<Account />} />
         </Route>
 
         <Route path="*" element={<div>404 | Not Found</div>} />
