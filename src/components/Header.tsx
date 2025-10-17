@@ -22,7 +22,7 @@ export default function Header() {
 
         <div className="gap-2 flex justify-end items-end">
           <Text as="h4" className="text-white custom-shadow">
-            {appUser?.username}
+            {localStorage.getItem("username")}
           </Text>
 
           <Menu>

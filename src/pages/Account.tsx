@@ -24,7 +24,7 @@ const formSchema = z.object({
 });
 
 export default function Account() {
-  const { appUser, updateAccount } = useAuth();
+  const { updateAccount } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmittingForm, setIsSubmittingForm] = useState(false);
   const [error, setError] = useState("");
@@ -36,7 +36,7 @@ export default function Account() {
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: appUser?.username,
+      username: localStorage.getItem("username")!,
       newPassword: "",
     },
   });

@@ -153,7 +153,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const user = await getDoc(userRef);
     setAppUser(user.data() as AppUser);
-    console.log(appUser);
+    localStorage.setItem("username", username);
 
     if (newPassword) {
       await updatePassword(firebaseUser!, newPassword);
