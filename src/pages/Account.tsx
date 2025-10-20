@@ -46,7 +46,11 @@ export default function Account() {
     setError("");
 
     try {
-      await updateAccount(values.username, values.newPassword!).then();
+      await updateAccount(
+        localStorage.getItem("username")!,
+        values.username,
+        values.newPassword!
+      ).then();
       toast.success("Profile updated successfully", {
         richColors: true,
       });

@@ -23,7 +23,6 @@ import {
   getDoc,
   runTransaction,
   serverTimestamp,
-  updateDoc,
 } from "firebase/firestore";
 import type { User as AppUser } from "@/types/models";
 import { Navigate, Outlet } from "react-router-dom";
@@ -38,7 +37,11 @@ type AuthContextType = {
   signUp: (email: string, password: string, username: string) => Promise<void>;
   googleSignIn: () => Promise<UserCredential>;
   githubSignIn: () => Promise<UserCredential>;
-  updateAccount: (username: string, newPassword: string) => Promise<void>;
+  updateAccount: (
+    oldUsername: string,
+    newUsername: string,
+    newPassword: string
+  ) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
@@ -76,6 +79,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const ref = doc(db, "users", uid);
     const snap = await getDoc(ref);
     if (snap.exists()) {
+      localStorage.setItem("username", snap.data().username);
       setAppUser(snap.data() as AppUser);
     } else {
       setAppUser(null);
@@ -145,15 +149,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await firebaseAuth.signOut();
   };
 
-  const updateAccount = async (username: string, newPassword: string) => {
+  const updateAccount = async (
+    oldUsername: string,
+    newUsername: string,
+    newPassword: string
+  ) => {
     const userRef = doc(db, "users", firebaseUser!.uid);
-    await updateDoc(userRef, {
-      username,
+    const newUsernameRef = doc(db, "usernames", newUsername);
+    const oldUsernameRef = doc(db, "usernames", oldUsername);
+
+    await runTransaction(db, async (transaction) => {
+      const newUsernameDoc = await transaction.get(newUsernameRef);
+
+      if (newUsernameDoc.exists()) {
+        throw new Error("Username already taken");
+      }
+
+      transaction.delete(oldUsernameRef);
+      transaction.set(newUsernameRef, { uid: firebaseUser!.uid });
+      transaction.update(userRef, { username: newUsername });
     });
 
+    localStorage.setItem("username", newUsername);
     const user = await getDoc(userRef);
     setAppUser(user.data() as AppUser);
-    localStorage.setItem("username", username);
 
     if (newPassword) {
       await updatePassword(firebaseUser!, newPassword);
