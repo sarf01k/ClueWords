@@ -47,7 +47,10 @@ export default function Header() {
                 Account
               </Menu.Item>
 
-              <Menu.Item className="gap-2">
+              <Menu.Item
+                className="gap-2"
+                onClick={() => navigate("/scoreboard")}
+              >
                 <Trophy size={18} color="#000000" />
                 Scoreboard
               </Menu.Item>

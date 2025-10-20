@@ -43,7 +43,15 @@ export default function Results() {
               Home
             </Button>
 
-            <Button size="md">Scoreboard</Button>
+            <Button
+              size="md"
+              onClick={() => {
+                resetQuiz();
+                navigate("/scoreboard");
+              }}
+            >
+              Scoreboard
+            </Button>
 
             <PlayAgainDialog
               trigger={
@@ -59,7 +67,7 @@ export default function Results() {
           </div>
           <div className="mt-6">
             {answers.map((ans, i) => (
-              <div className="flex not-md:flex-col items-center mb-6">
+              <div key={i} className="flex not-md:flex-col items-center mb-6">
                 <img
                   className="border-2 scale-75 shadow-md"
                   src={challenge?.questions[i].image}

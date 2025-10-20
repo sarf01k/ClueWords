@@ -9,6 +9,7 @@ import Play from "./pages/quiz/Play";
 import Results from "./pages/quiz/Results";
 import Account from "./pages/Account";
 import { Toaster } from "./components/retroui/Sonner";
+import Scoreboard from "./pages/quiz/Scoreboard";
 
 function App() {
   return (
@@ -24,7 +25,7 @@ function App() {
           <Route path="/play" element={<Play />} />
           <Route path="/results" element={<Results />} />
           <Route path="/account" element={<Account />} />
-          <Route path="/scoreboard" element={<Account />} />
+          <Route path="/scoreboard" element={<Scoreboard />} />
         </Route>
 
         <Route path="*" element={<div>404 | Not Found</div>} />

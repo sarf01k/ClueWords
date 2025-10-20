@@ -2,6 +2,7 @@ import { ref, get as getFromFirebase, child } from "firebase/database";
 import { db, realDB } from "@/config/firebase";
 import { create } from "zustand";
 import { doc, getDoc, updateDoc } from "@firebase/firestore";
+import { addToScoreboard } from "@/services/scoreboardService";
 
 interface Question {
   question: string;
@@ -114,6 +115,20 @@ export const useChallenges = create<ChallengeState>((set, get) => ({
           currentScore: user.data()!.currentScore + score,
           challengesCount: user.data()!.challengesCount + 1,
         });
+
+        // await addDoc(collection(db, "leaderboard"), {
+        //   userId,
+        //   username: user.data()!.username,
+        //   score,
+        //   timestamp: serverTimestamp(),
+        // });
+        const scoreData = {
+          userId,
+          score,
+        };
+
+        addToScoreboard(scoreData);
+
         refreshAppUser(userId);
       }
     }
