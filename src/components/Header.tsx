@@ -3,10 +3,11 @@ import HeroText from "./Hero-Text.component";
 import { Text } from "@/components/retroui/Text";
 import { Menu } from "./retroui/Menu";
 import AvatarPFP from "./Avatar";
-import { User, Trophy, LogOut, PersonStanding } from "lucide-react";
+import { User, Trophy, LogOut, PersonStanding, Calendar } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Dialog } from "@/components/retroui/Dialog";
 import { useState } from "react";
+import type { Timestamp } from "firebase/firestore";
 
 export default function Header() {
   const { appUser, signOut } = useAuth();
@@ -24,7 +25,6 @@ export default function Header() {
           <Text as="h4" className="text-white custom-shadow">
             {localStorage.getItem("username")}
           </Text>
-
           <Menu>
             <Menu.Trigger>
               <AvatarPFP />
@@ -62,20 +62,54 @@ export default function Header() {
             </Menu.Content>
           </Menu>
 
+          {/* Profile Dialog */}
           <Dialog open={open} onOpenChange={setOpen}>
-            <Dialog.Content className="w-11/12 md:w-sm" size="sm">
+            <Dialog.Content size="sm">
               <Dialog.Header>
                 <Text as="h5">Profile</Text>
               </Dialog.Header>
 
-              <div className="flex flex-col py-4 px-12 gap-4">
+              <div className="flex flex-col py-4 px-4 gap-4">
                 <div className="flex flex-col items-center gap-4">
-                  <Text as="h4">{appUser?.username}</Text>
-                  <AvatarPFP size={120} />
+                  <div className="flex items-center gap-2">
+                    <User size={20} />
+                    <Text as="h4">{localStorage.getItem("username")!}</Text>
+                  </div>
+                  <AvatarPFP size={80} />
                 </div>
-                <div className="font-bold text-lg">
-                  <p>Score: {appUser?.currentScore}</p>
-                  <p>Challenges played: {appUser?.challengeCount}</p>
+
+                <div className="grid grid-cols-1">
+                  <div className="px-4">
+                    <h5 className="text-center font-semibold">CURRENT WEEK</h5>
+                    <p className="font-medium">Score</p>
+                    <p>{appUser?.currentScore}</p>
+                    <p className="font-medium">Challenges Played</p>
+                    <p>{appUser?.challengeCount}</p>
+                    <p></p>
+                  </div>
+                  {/* <div className="border-l px-4">
+                    <h5 className="text-center font-semibold">
+                      OVERALL TOTALS
+                    </h5>
+                    <p className="font-medium">Score</p>
+                    <p>1</p>
+                    <p className="font-medium">Challenges Played</p>
+                    <p>4</p>
+                  </div> */}
+                </div>
+
+                <div className="flex justify-center gap-2 mt-6 text-sm">
+                  <Calendar size={20} />
+                  <h5 className="">
+                    Joined:{" "}
+                    {(appUser?.joinedAt as Timestamp)
+                      ?.toDate()
+                      .toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                  </h5>
                 </div>
               </div>
             </Dialog.Content>

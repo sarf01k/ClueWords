@@ -12,5 +12,5 @@ export type User = {
   currentScore: number;
   challengeCount: number;
   playedChallenges: PlayedChallenge;
-  createdAt: FieldValue;
+  joinedAt: FieldValue;
 };

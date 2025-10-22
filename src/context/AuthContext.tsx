@@ -114,7 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       currentScore: 0,
       challengeCount: 0,
       playedChallenges: {},
-      createdAt: serverTimestamp(),
+      joinedAt: serverTimestamp(),
     };
 
     try {
