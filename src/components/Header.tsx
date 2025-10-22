@@ -75,7 +75,7 @@ export default function Header() {
                 </div>
                 <div className="font-bold text-lg">
                   <p>Score: {appUser?.currentScore}</p>
-                  <p>Challenges played: {appUser?.challengesCount}</p>
+                  <p>Challenges played: {appUser?.challengeCount}</p>
                 </div>
               </div>
             </Dialog.Content>

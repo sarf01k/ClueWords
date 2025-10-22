@@ -19,6 +19,7 @@ import {
 } from "react";
 import { db, firebaseAuth } from "../config/firebase";
 import {
+  deleteDoc,
   doc,
   getDoc,
   runTransaction,
@@ -111,7 +112,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email: userCred.user.email!,
       username,
       currentScore: 0,
-      challengesCount: 0,
+      challengeCount: 0,
       playedChallenges: {},
       createdAt: serverTimestamp(),
     };
@@ -165,9 +166,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error("Username already taken");
       }
 
-      transaction.delete(oldUsernameRef);
+      // transaction.delete(oldUsernameRef);
       transaction.set(newUsernameRef, { uid: firebaseUser!.uid });
       transaction.update(userRef, { username: newUsername });
+      await deleteDoc(oldUsernameRef);
     });
 
     localStorage.setItem("username", newUsername);

@@ -25,7 +25,7 @@ startOfWeek.setHours(0, 0, 0, 0); // sets start of week to manday at 00:00
 endOfWeek.setDate(startOfWeek.getDate() + 6);
 endOfWeek.setHours(23, 59, 59, 999);
 
-export async function getWeeklyLeaderboard() {
+export async function getScoreboard() {
   const q = query(
     collection(db, "leaderboard"),
     where("timestamp", ">=", startOfWeek),

@@ -36,7 +36,6 @@ export default function Results() {
               size="md"
               className="justify-center"
               onClick={() => {
-                resetQuiz();
                 navigate("/home");
               }}
             >
@@ -46,7 +45,6 @@ export default function Results() {
             <Button
               size="md"
               onClick={() => {
-                resetQuiz();
                 navigate("/scoreboard");
               }}
             >

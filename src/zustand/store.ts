@@ -113,7 +113,7 @@ export const useChallenges = create<ChallengeState>((set, get) => ({
             score,
           },
           currentScore: user.data()!.currentScore + score,
-          challengesCount: user.data()!.challengesCount + 1,
+          challengeCount: user.data()!.challengeCount + 1,
         });
 
         // await addDoc(collection(db, "leaderboard"), {
@@ -125,6 +125,8 @@ export const useChallenges = create<ChallengeState>((set, get) => ({
         const scoreData = {
           userId,
           score,
+          challengeCount: user.data()!.challengeCount + 1,
+          currentScore: user.data()!.currentScore + score,
         };
 
         addToScoreboard(scoreData);

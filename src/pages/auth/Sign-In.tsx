@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { Loader } from "@/components/retroui/Loader";
+import { formatError } from "@/utils/errors";
 
 const formSchema = z.object({
   email: z.email({ message: "Please enter a valid email address" }),
@@ -44,8 +45,9 @@ export default function SignIn() {
       await signIn(values.email, values.password);
       navigate("/home");
     } catch (error) {
+      setError(formatError(error));
+    } finally {
       setIsSubmittingForm(false);
-      setError(`${error}`);
     }
   };
 

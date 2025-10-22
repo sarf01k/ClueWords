@@ -11,11 +11,12 @@ import PlayAgainDialog from "@/components/Play-Again-Dialog";
 export default function Home() {
   const { appUser } = useAuth();
   const navigate = useNavigate();
-  const { fetchChallenges, challenges, loading } = useChallenges();
+  const { fetchChallenges, challenges, loading, resetQuiz } = useChallenges();
 
   useEffect(() => {
+    resetQuiz();
     fetchChallenges();
-  }, [fetchChallenges]);
+  }, [resetQuiz, fetchChallenges]);
 
   return (
     <div className="min-h-[100dvh] flex flex-col">
@@ -75,7 +76,7 @@ export default function Home() {
               })}
             </main>
             <div className="flex justify-center my-16">
-              <div className="border-2 bg-white w-2/3 text-center py-8 px-4">
+              <div className="border-2 bg-white w-[90%] md:w-2/3 text-center py-8 px-4">
                 <Text as="h5">more challenges soon...</Text>
               </div>
             </div>

@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { toast } from "sonner";
+import { formatError } from "@/utils/errors";
 
 const formSchema = z.object({
   username: z
@@ -23,6 +24,8 @@ const formSchema = z.object({
     .or(z.literal("")),
 });
 
+const initialUsername = localStorage.getItem("username")!;
+
 export default function Account() {
   const { updateAccount } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
@@ -31,15 +34,22 @@ export default function Account() {
 
   const {
     register,
+    watch,
     handleSubmit,
     formState: { errors },
   } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: localStorage.getItem("username")!,
+      username: initialUsername,
       newPassword: "",
     },
   });
+
+  const watchedUsername = watch("username");
+  const isUsernameUnchanged =
+    watchedUsername === localStorage.getItem("username")!;
+
+  const isButtonDisabled = isSubmittingForm || isUsernameUnchanged;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsSubmittingForm(true);
@@ -55,8 +65,7 @@ export default function Account() {
         richColors: true,
       });
     } catch (error) {
-      setIsSubmittingForm(false);
-      setError(`${error}`);
+      setError(formatError(error));
     } finally {
       setIsSubmittingForm(false);
       values.newPassword = "";
@@ -122,7 +131,7 @@ export default function Account() {
               <Button
                 type="submit"
                 className="w-1/3 md:w-1/4 flex items-center justify-center min-h-[40px]"
-                disabled={isSubmittingForm}
+                disabled={isButtonDisabled}
               >
                 {isSubmittingForm ? (
                   <div>

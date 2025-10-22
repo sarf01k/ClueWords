@@ -10,7 +10,7 @@ export type User = {
   email: string;
   username: string;
   currentScore: number;
-  challengesCount: number;
+  challengeCount: number;
   playedChallenges: PlayedChallenge;
   createdAt: FieldValue;
 };
