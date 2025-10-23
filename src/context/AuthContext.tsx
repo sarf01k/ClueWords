@@ -24,9 +24,10 @@ import {
   getDoc,
   runTransaction,
   serverTimestamp,
+  setDoc,
 } from "firebase/firestore";
 import type { User as AppUser } from "@/types/models";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { Loader } from "@/components/retroui/Loader";
 
 type AuthContextType = {
@@ -36,7 +37,7 @@ type AuthContextType = {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, username: string) => Promise<void>;
-  googleSignIn: () => Promise<UserCredential>;
+  googleSignIn: () => Promise<void>;
   githubSignIn: () => Promise<UserCredential>;
   updateAccount: (
     oldUsername: string,
@@ -54,6 +55,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
   const [appUser, setAppUser] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, async (user) => {
@@ -102,6 +104,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email,
       password
     );
+    setFirebaseUser(userCred.user);
 
     const uid = userCred.user.uid;
 
@@ -131,6 +134,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         transaction.set(userRef, newUser);
       });
 
+      localStorage.setItem("username", username);
       setAppUser(newUser);
     } catch (error) {
       await userCred.user.delete();
@@ -138,9 +142,41 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const googleSignIn = () => {
+  const googleSignIn = async () => {
     const provider = new GoogleAuthProvider();
-    return signInWithPopup(firebaseAuth, provider);
+
+    try {
+      const userCred = await signInWithPopup(firebaseAuth, provider);
+      setFirebaseUser(userCred.user);
+
+      const uid = userCred.user.uid;
+      const username =
+        userCred.user.displayName!.toLowerCase().split(" ")[0] +
+        uid.slice(0, 4);
+
+      const usernameRef = doc(db, "usernames", username);
+      const userRef = doc(db, "users", uid);
+
+      const newUser: AppUser = {
+        email: userCred.user.email!,
+        username,
+        weekCurrentScore: 0,
+        weekChallengeCount: 0,
+        overallCurrentScore: 0,
+        overallChallengeCount: 0,
+        playedChallenges: {},
+        joinedAt: serverTimestamp(),
+      };
+
+      await setDoc(usernameRef, { uid });
+      await setDoc(userRef, newUser);
+
+      localStorage.setItem("username", username);
+      setAppUser(newUser);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const githubSignIn = () => {
@@ -150,6 +186,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await firebaseAuth.signOut();
+    localStorage.removeItem("username");
+    navigate("/");
   };
 
   const updateAccount = async (

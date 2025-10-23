@@ -2,7 +2,7 @@ import { Input } from "@/components/retroui/Input";
 import { Text } from "@/components/retroui/Text";
 import { Label } from "@radix-ui/react-label";
 import { Button } from "@/components/retroui/Button";
-import { CircleAlert, Eye, EyeOff, Github, Mail } from "lucide-react";
+import { CircleAlert, Eye, EyeOff, Mail } from "lucide-react";
 import HeroText from "../../components/Hero-Text.component";
 import { useState } from "react";
 import z from "zod";
@@ -19,7 +19,7 @@ const formSchema = z.object({
 });
 
 export default function SignIn() {
-  const { signIn } = useAuth();
+  const { signIn, googleSignIn } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmittingForm, setIsSubmittingForm] = useState(false);
   const [error, setError] = useState("");
@@ -43,7 +43,7 @@ export default function SignIn() {
 
     try {
       await signIn(values.email, values.password);
-      navigate("/home");
+      navigate("/");
     } catch (error) {
       setError(formatError(error));
     } finally {
@@ -57,7 +57,7 @@ export default function SignIn() {
         <div className="h-fit mx-auto max-w-md border-4 bg-card mt-6">
           <div className="bg-amber-300 p-6">
             <div className="flex justify-center mb-4">
-              <Link to={"/home"} className="inline-block">
+              <Link to={"/"} className="inline-block">
                 <HeroText size="90px" />
               </Link>
             </div>
@@ -146,22 +146,14 @@ export default function SignIn() {
                   </span>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <Button
-                  variant="secondary"
-                  className="w-full flex items-center justify-center"
-                >
-                  <Mail size={16} className="mr-2" />
-                  Google
-                </Button>
-                <Button
-                  variant="secondary"
-                  className="w-full flex items-center justify-center"
-                >
-                  <Github size={16} className="mr-2" />
-                  Github
-                </Button>
-              </div>
+              <Button
+                variant="secondary"
+                className="w-full flex items-center justify-center"
+                onClick={() => googleSignIn()}
+              >
+                <Mail size={16} className="mr-2" />
+                Google
+              </Button>
               <div className="mt-6 text-center text-sm">
                 Don&apos;t have an account?{" "}
                 <Link

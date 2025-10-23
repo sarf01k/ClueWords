@@ -11,7 +11,7 @@ export default function AvatarPFP({ size }: AvatarPFPProps) {
   return (
     <Avatar
       className="border-2 rounded-full cursor-pointer"
-      name={firebaseUser!.email!}
+      name={firebaseUser!.uid!}
       variant="beam"
       colors={[
         "#92A1C6",

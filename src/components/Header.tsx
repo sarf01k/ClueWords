@@ -7,7 +7,7 @@ import { User, Trophy, LogOut, PersonStanding, Calendar } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Dialog } from "@/components/retroui/Dialog";
 import { useState } from "react";
-import type { Timestamp } from "firebase/firestore";
+import { Timestamp } from "firebase/firestore";
 
 export default function Header() {
   const { appUser, signOut } = useAuth();
@@ -17,7 +17,7 @@ export default function Header() {
   return (
     <header className="bg-primary py-4 px-2 border-b-2">
       <div className="max-w-5xl mx-auto flex justify-between">
-        <Link to={"/home"}>
+        <Link to={"/"}>
           <HeroText size="90px" />
         </Link>
 
@@ -102,13 +102,13 @@ export default function Header() {
                   <Calendar size={20} />
                   <h5>
                     Joined:{" "}
-                    {(appUser?.joinedAt as Timestamp)
-                      ?.toDate()
-                      .toLocaleDateString("en-UK", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                    {appUser?.joinedAt instanceof Timestamp
+                      ? appUser.joinedAt.toDate().toLocaleDateString("en-UK", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
+                      : "—"}
                   </h5>
                 </div>
               </div>

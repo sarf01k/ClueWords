@@ -15,7 +15,7 @@ export default function Results() {
 
   useEffect(() => {
     if (!isCompleted) {
-      navigate("/home");
+      navigate("/");
     }
   }, [isCompleted, navigate]);
 
@@ -36,7 +36,7 @@ export default function Results() {
               size="md"
               className="justify-center"
               onClick={() => {
-                navigate("/home");
+                navigate("/");
               }}
             >
               Home

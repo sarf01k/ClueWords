@@ -55,7 +55,7 @@ export default function ForgotPassword() {
         <div className="h-fit mx-auto max-w-md border-4 bg-card mt-6">
           <div className="grid grid-cols-1 bg-amber-300 p-6">
             <div className="flex justify-center mb-4">
-              <Link to={"/home"} className="inline-block">
+              <Link to={"/"} className="inline-block">
                 <HeroText size="90px" />
               </Link>
             </div>
