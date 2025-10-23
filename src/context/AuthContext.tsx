@@ -111,8 +111,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const newUser: AppUser = {
       email: userCred.user.email!,
       username,
-      currentScore: 0,
-      challengeCount: 0,
+      weekCurrentScore: 0,
+      weekChallengeCount: 0,
+      overallCurrentScore: 0,
+      overallChallengeCount: 0,
       playedChallenges: {},
       joinedAt: serverTimestamp(),
     };

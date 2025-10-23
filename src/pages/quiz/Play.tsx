@@ -14,6 +14,8 @@ export default function Play() {
   const challengeId = searchParams.get("challenge");
   const { firebaseUser, refreshAppUser } = useAuth();
   const navigate = useNavigate();
+  const [imgLoaded, setImgLoaded] = useState(false);
+
   const {
     loading,
     fetchChallenge,
@@ -104,8 +106,21 @@ export default function Play() {
           <Text as="h4" className="text-center">
             What is this puzzle saying?
           </Text>
-          <div className="bg-[#ebe6e7] border-2">
-            <img src={question.image} alt="" height={200} />
+          <div className="bg-[#ebe6e7] border-2 flex justify-center items-center relative overflow-hidden">
+            {!imgLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Loader variant="secondary" />
+              </div>
+            )}
+            <img
+              src={question.image}
+              alt=""
+              height={200}
+              onLoad={() => setImgLoaded(true)}
+              className={`transition-opacity duration-500 ease-in-out ${
+                imgLoaded ? "opacity-100 blur-0" : "opacity-0 blur-md"
+              }`}
+            />
           </div>
           <Input
             type="text"

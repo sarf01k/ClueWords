@@ -78,33 +78,33 @@ export default function Header() {
                   <AvatarPFP size={80} />
                 </div>
 
-                <div className="grid grid-cols-1">
+                <div className="grid grid-cols-2">
                   <div className="px-4">
                     <h5 className="text-center font-semibold">CURRENT WEEK</h5>
                     <p className="font-medium">Score</p>
-                    <p>{appUser?.currentScore}</p>
+                    <p>{appUser?.weekCurrentScore}</p>
                     <p className="font-medium">Challenges Played</p>
-                    <p>{appUser?.challengeCount}</p>
+                    <p>{appUser?.weekChallengeCount}</p>
                     <p></p>
                   </div>
-                  {/* <div className="border-l px-4">
+                  <div className="border-l px-4">
                     <h5 className="text-center font-semibold">
                       OVERALL TOTALS
                     </h5>
                     <p className="font-medium">Score</p>
-                    <p>1</p>
+                    <p>{appUser?.overallCurrentScore}</p>
                     <p className="font-medium">Challenges Played</p>
-                    <p>4</p>
-                  </div> */}
+                    <p>{appUser?.overallChallengeCount}</p>
+                  </div>
                 </div>
 
                 <div className="flex justify-center gap-2 mt-6 text-sm">
                   <Calendar size={20} />
-                  <h5 className="">
+                  <h5>
                     Joined:{" "}
                     {(appUser?.joinedAt as Timestamp)
                       ?.toDate()
-                      .toLocaleDateString("en-US", {
+                      .toLocaleDateString("en-UK", {
                         year: "numeric",
                         month: "long",
                         day: "numeric",

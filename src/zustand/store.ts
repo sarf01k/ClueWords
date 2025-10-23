@@ -112,26 +112,22 @@ export const useChallenges = create<ChallengeState>((set, get) => ({
           [`playedChallenges.${challengeId}`]: {
             score,
           },
-          currentScore: user.data()!.currentScore + score,
-          challengeCount: user.data()!.challengeCount + 1,
+          weekCurrentScore: user.data()!.weekCurrentScore + score,
+          weekChallengeCount: user.data()!.weekChallengeCount + 1,
+          overallCurrentScore: user.data()!.overallCurrentScore + score,
+          overallChallengeCount: user.data()!.overallChallengeCount + 1,
         });
 
-        // await addDoc(collection(db, "leaderboard"), {
-        //   userId,
-        //   username: user.data()!.username,
-        //   score,
-        //   timestamp: serverTimestamp(),
-        // });
         const scoreData = {
           userId,
           score,
-          challengeCount: user.data()!.challengeCount + 1,
-          currentScore: user.data()!.currentScore + score,
+          weekCurrentScore: user.data()!.weekCurrentScore + score,
+          weekChallengeCount: user.data()!.weekChallengeCount + 1,
         };
 
-        addToScoreboard(scoreData);
+        await addToScoreboard(scoreData);
 
-        refreshAppUser(userId);
+        await refreshAppUser(userId);
       }
     }
   },

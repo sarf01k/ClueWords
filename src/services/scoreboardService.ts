@@ -1,17 +1,6 @@
-import {
-  collection,
-  query,
-  where,
-  orderBy,
-  getDocs,
-  limit,
-  doc,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-  getDoc,
-} from "firebase/firestore";
+import { doc, setDoc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 import { db } from "@/config/firebase";
+import type { ScoreboardEntry } from "@/types/models";
 
 const now = new Date(); // current date & time
 const startOfWeek = new Date(now);
@@ -26,22 +15,24 @@ endOfWeek.setDate(startOfWeek.getDate() + 6);
 endOfWeek.setHours(23, 59, 59, 999);
 
 export async function getScoreboard() {
-  const q = query(
-    collection(db, "leaderboard"),
-    where("timestamp", ">=", startOfWeek),
-    where("timestamp", "<=", endOfWeek),
-    orderBy("timestamp"),
-    orderBy("score", "desc"),
-    limit(10)
+  const snapshot = await getDoc(
+    doc(
+      db,
+      "scoreboard",
+      `${startOfWeek.toDateString()} to ${endOfWeek.toDateString()}`
+    )
   );
 
-  const snapshot = await getDocs(q);
-  return snapshot.docs.map((doc) => doc.data());
+  if (!snapshot.exists()) return [];
+
+  const data = snapshot.data() as { scores: ScoreboardEntry[] };
+
+  return data.scores.sort((a, b) => b.weekCurrentScore - a.weekCurrentScore);
 }
 
 export async function addToScoreboard(scoreData: object) {
   const weeklyDocId = `${startOfWeek.toDateString()} to ${endOfWeek.toDateString()}`;
-  const scoreRef = doc(db, "leaderboard", weeklyDocId);
+  const scoreRef = doc(db, "scoreboard", weeklyDocId);
 
   const docSnapshot = await getDoc(scoreRef);
 

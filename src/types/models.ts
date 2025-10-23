@@ -9,8 +9,17 @@ interface PlayedChallenge {
 export type User = {
   email: string;
   username: string;
-  currentScore: number;
-  challengeCount: number;
+  weekCurrentScore: number;
+  weekChallengeCount: number;
+  overallCurrentScore: number;
+  overallChallengeCount: number;
   playedChallenges: PlayedChallenge;
   joinedAt: FieldValue;
+};
+
+export type ScoreboardEntry = {
+  userId: string;
+  score: number;
+  weekCurrentScore: number;
+  weekChallengeCount: number;
 };
