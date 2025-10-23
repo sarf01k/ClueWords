@@ -22,7 +22,10 @@ const formSchema = z.object({
     .string()
     .min(2, { message: "Username must be at least 2 characters long" })
     .max(18, { message: "Username must not exceed 18 characters" })
-    .lowercase({ message: "Username must be lowercase" }),
+    .lowercase({ message: "Username must be lowercase" })
+    .regex(/^[a-zA-Z0-9]+$/, {
+      message: "Input must contain only alphanumeric characters.",
+    }),
 });
 
 export default function SignUp() {
