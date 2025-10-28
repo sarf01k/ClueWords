@@ -19,6 +19,7 @@ export type User = {
 
 export type ScoreboardEntry = {
   userId: string;
+  username: string;
   score: number;
   weekCurrentScore: number;
   weekChallengeCount: number;

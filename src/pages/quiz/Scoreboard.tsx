@@ -47,7 +47,7 @@ export default function Scoreboard() {
             scoreboard.map((entry, index) => (
               <Table.Row key={index}>
                 <Table.Cell className="font-medium">{index + 1}</Table.Cell>
-                <Table.Cell>lop</Table.Cell>
+                <Table.Cell>{entry.username}</Table.Cell>
                 <Table.Cell className="text-center">
                   {entry.weekChallengeCount}
                 </Table.Cell>

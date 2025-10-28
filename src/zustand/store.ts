@@ -120,6 +120,7 @@ export const useChallenges = create<ChallengeState>((set, get) => ({
 
         const scoreData = {
           userId,
+          username: localStorage.getItem("username"),
           score,
           weekCurrentScore: user.data()!.weekCurrentScore + score,
           weekChallengeCount: user.data()!.weekChallengeCount + 1,
