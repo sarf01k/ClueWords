@@ -7,12 +7,12 @@ import { useEffect, useState } from "react";
 import { Loader } from "@/components/retroui/Loader";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Dialog } from "@/components/retroui/Dialog";
-import { useAuth } from "@/context/AuthContext";
+import { useCache } from "@/context/CacheContext";
 
 export default function Play() {
   const [searchParams] = useSearchParams();
   const challengeId = searchParams.get("challenge");
-  const { firebaseUser, refreshAppUser } = useAuth();
+  const { refreshCache } = useCache();
   const navigate = useNavigate();
   const [imgLoaded, setImgLoaded] = useState(false);
 
@@ -38,14 +38,7 @@ export default function Play() {
     if (!question) return;
     const isCorrect =
       answer.trim().toLowerCase() === question.answer.toLowerCase();
-    submitAnswer(
-      isCorrect,
-      3,
-      answer,
-      firebaseUser!.uid,
-      challengeId!,
-      refreshAppUser
-    );
+    submitAnswer(isCorrect, 3, answer, challengeId!, refreshCache);
     setAnswer("");
   };
 

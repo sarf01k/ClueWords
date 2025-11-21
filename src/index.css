@@ -1,12 +1,12 @@
-@import url('https://fonts.cdnfonts.com/css/gt-maru');
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap');
+@import url("https://fonts.cdnfonts.com/css/gt-maru");
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
 
 @theme {
-  --font-head: 'Archivo Black', sans-serif;
-  --font-sans: 'Space Grotesk', sans-serif;
+  --font-head: "Archivo Black", sans-serif;
+  --font-sans: "Space Grotesk", sans-serif;
   --font-rubik: "Rubik Doodle Shadow", system-ui;
   --shadow-xs: 1px 1px 0 0 var(--border);
   --shadow-sm: 2px 2px 0 0 var(--border);
@@ -75,14 +75,15 @@
 .home-bg {
   /* background-color: #3a3a3a; */
   background-image: url("https://rozebunker.nl/wp-content/themes/Blautheme/images/background.jpg");
-  background-size: 360px;
+  background-size: 250px;
 }
 .em {
-  font-family: 'GT Maru', sans-serif;
+  font-family: "GT Maru", sans-serif;
 }
 
 .text-outlined {
-  text-shadow: 0 0 0 var(--color-primary), 0 0 0 var(--color-primary), 2px 2px 0 var(--color-primary), 2px 2px 0 var(--color-primary);
+  text-shadow: 0 0 0 var(--color-primary), 0 0 0 var(--color-primary),
+    2px 2px 0 var(--color-primary), 2px 2px 0 var(--color-primary);
 }
 
 .fade {
@@ -90,19 +91,16 @@
   position: relative;
 
   /* fade on all sides */
-  -webkit-mask-image: radial-gradient(closest-side,
-      #000000 78%,
-      /* solid center */
-      transparent 100%
-      /* fade edges */
-    );
+  -webkit-mask-image: radial-gradient(
+    closest-side,
+    #000000 78%,
+    /* solid center */ transparent 100% /* fade edges */
+  );
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
   -webkit-mask-size: cover;
 
-  mask-image: radial-gradient(closest-side,
-      #000000 78%,
-      transparent 100%);
+  mask-image: radial-gradient(closest-side, #000000 78%, transparent 100%);
   mask-repeat: no-repeat;
   mask-position: center;
   mask-size: cover;

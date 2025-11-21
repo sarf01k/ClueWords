@@ -1,8 +1,7 @@
 import { ref, get as getFromFirebase, child } from "firebase/database";
-import { db, realDB } from "@/config/firebase";
+import { realDB } from "@/config/firebase";
 import { create } from "zustand";
-import { doc, getDoc, updateDoc } from "@firebase/firestore";
-import { addToScoreboard } from "@/services/scoreboardService";
+import type { PlayedChallenges } from "@/types/models";
 
 interface Question {
   question: string;
@@ -36,9 +35,8 @@ interface ChallengeState {
     isCorrect: boolean,
     points: number,
     userAnswer: string,
-    userId: string,
-    quizId: string,
-    refreshAppUser: (uid: string) => Promise<void>
+    challengeId: string,
+    refreshCache: () => void
   ) => Promise<void>;
   resetQuiz: () => void;
 }
@@ -47,6 +45,10 @@ export const useChallenges = create<ChallengeState>((set, get) => ({
   loading: false,
   challenges: {},
   challenge: null,
+  answers: [],
+  activeQuestion: 0,
+  score: 0,
+  isCompleted: false,
 
   async fetchChallenges() {
     set({ loading: true });
@@ -72,18 +74,12 @@ export const useChallenges = create<ChallengeState>((set, get) => ({
     }
   },
 
-  answers: [],
-  activeQuestion: 0,
-  score: 0,
-  isCompleted: false,
-
   submitAnswer: async (
     isCorrect: boolean,
     points: number,
     userAnswer: string,
-    userId: string,
     challengeId: string,
-    refreshAppUser: (uid: string) => Promise<void>
+    refreshCache: () => void
   ) => {
     const { challenge, activeQuestion, score, answers } = get();
     const correctAnswer = challenge!.questions[activeQuestion].answer;
@@ -104,31 +100,16 @@ export const useChallenges = create<ChallengeState>((set, get) => ({
     });
 
     if (activeQuestion === challenge!.questions.length - 1) {
-      const userRef = doc(db, "users", userId);
-      const user = await getDoc(userRef);
+      const cacheStr = localStorage.getItem("cache");
+      const cache: PlayedChallenges = cacheStr
+        ? JSON.parse(cacheStr)
+        : { playedChallenges: {} };
 
-      if (!user.data()?.playedChallenges?.[challengeId]) {
-        await updateDoc(userRef, {
-          [`playedChallenges.${challengeId}`]: {
-            score,
-          },
-          weekCurrentScore: user.data()!.weekCurrentScore + score,
-          weekChallengeCount: user.data()!.weekChallengeCount + 1,
-          overallCurrentScore: user.data()!.overallCurrentScore + score,
-          overallChallengeCount: user.data()!.overallChallengeCount + 1,
-        });
+      if (!cache.playedChallenges[challengeId]) {
+        cache.playedChallenges[challengeId] = { score };
 
-        const scoreData = {
-          userId,
-          username: localStorage.getItem("username"),
-          score,
-          weekCurrentScore: user.data()!.weekCurrentScore + score,
-          weekChallengeCount: user.data()!.weekChallengeCount + 1,
-        };
-
-        await addToScoreboard(scoreData);
-
-        await refreshAppUser(userId);
+        localStorage.setItem("cache", JSON.stringify(cache));
+        refreshCache();
       }
     }
   },

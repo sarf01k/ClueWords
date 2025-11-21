@@ -1,16 +1,12 @@
-import AvatarPFP from "@/components/Avatar";
-import HeroText from "@/components/Hero-Text.component";
-import { useAuth } from "@/context/AuthContext";
+import Logo from "@/components/shared/Logo";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/retroui/Button";
 import { useChallenges } from "@/zustand/store";
 import { useEffect } from "react";
-import PlayAgainDialog from "@/components/Play-Again-Dialog";
-import { Check, X } from "lucide-react";
+import PlayAgainDialog from "@/components/shared/Play-Again-Dialog";
 
 export default function Results() {
   const navigate = useNavigate();
-  const { appUser } = useAuth();
   const { score, isCompleted, resetQuiz, challenge, answers } = useChallenges();
 
   useEffect(() => {
@@ -21,17 +17,19 @@ export default function Results() {
 
   return (
     <div className="home-bg">
-      <div className="bg-white min-h-[100dvh] py-16 px-4 max-w-4xl mx-auto space-y-20 border-x-4">
+      <div className="bg-white py-16 px-4 max-w-4xl mx-auto space-y-20 border-x-4">
         <div className="flex justify-center">
           <Link to={"/"} className="inline-block">
-            <HeroText size="90px" />
+            <Logo />
           </Link>
         </div>
-        <div className="flex flex-col items-center gap-2">
-          <AvatarPFP size={80} />
-          <h4 className="text-black font-extrabold">{appUser?.username}</h4>
-          <p className="text-black font-extrabold text-3xl">{score} points</p>
-          <div className="grid grid-cols-2 md:flex justify-center items-center gap-2 md:gap-4 text-center">
+        <div className="flex flex-col items-center">
+          <div className="text-black font-extrabold">
+            <span className=" text-5xl">{score}</span>
+            &nbsp;
+            <span className="text-3xl">points</span>
+          </div>
+          <div className="flex gap-4 mt-4">
             <Button
               size="md"
               className="justify-center"
@@ -40,15 +38,6 @@ export default function Results() {
               }}
             >
               Home
-            </Button>
-
-            <Button
-              size="md"
-              onClick={() => {
-                navigate("/scoreboard");
-              }}
-            >
-              Scoreboard
             </Button>
 
             <PlayAgainDialog
@@ -63,26 +52,47 @@ export default function Results() {
               }}
             />
           </div>
-          <div className="mt-6">
+          <div className="mt-14 space-y-8">
             {answers.map((ans, i) => (
-              <div key={i} className="flex not-md:flex-col items-center mb-6">
-                <img
-                  className="border-2 scale-75 shadow-md"
-                  src={challenge?.questions[i].image}
-                  alt="puzzle"
-                />
-                <div>
-                  <p className="text-lg font-medium flex items-center gap-1">
-                    Your answer: {ans.userAnswer}
-                    {ans.isCorrect ? (
-                      <Check color="#016630" strokeWidth={2.75} size={18} />
-                    ) : (
-                      <X color="#e7000b" strokeWidth={2.75} size={18} />
-                    )}
-                  </p>
-                  <p className="text-lg font-medium">
-                    Correct answer: {ans.correctAnswer}
-                  </p>
+              <div
+                key={i}
+                className="flex not-md:flex-col not-md:items-center gap-6"
+              >
+                <div className="relative">
+                  <img
+                    className="border-2 shadow-md"
+                    src={challenge?.questions[i].image}
+                    alt="puzzle"
+                  />
+                  <div className="bg-black absolute -top-3 -left-3 text-white py-1 px-3">
+                    {i + 1}
+                  </div>
+                </div>
+                <div className="flex flex-col justify-between lg:py-4">
+                  <div className="flex flex-col">
+                    <div>
+                      <span className="text-sm text-gray-600">
+                        Your answer: &nbsp;
+                      </span>
+                      {ans.isCorrect ? (
+                        <span className="font-bold text-[#4ADE80]">
+                          {ans.userAnswer} ✓
+                        </span>
+                      ) : (
+                        <span className="font-bold text-red-500">
+                          {ans.userAnswer} ✖
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-600">
+                        Correct answer: &nbsp;
+                      </span>
+                      <span className="text-md font-bold">
+                        {ans.correctAnswer.toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}

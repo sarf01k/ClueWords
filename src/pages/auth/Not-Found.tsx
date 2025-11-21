@@ -1,4 +1,4 @@
-import Header from "@/components/Header";
+import Header from "@/components/shared/Header";
 import { Text } from "@/components/retroui/Text";
 
 export default function NotFound() {

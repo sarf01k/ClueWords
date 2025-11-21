@@ -2,7 +2,7 @@ import { Input } from "@/components/retroui/Input";
 import { Text } from "@/components/retroui/Text";
 import { Label } from "@radix-ui/react-label";
 import { Button } from "@/components/retroui/Button";
-import HeroText from "../../components/Hero-Text.component";
+import HeroText from "../../components/shared/Logo";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

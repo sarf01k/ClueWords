@@ -1,15 +1,15 @@
 import { Button } from "@/components/retroui/Button";
 import { Text } from "@/components/retroui/Text";
-import { useAuth } from "@/context/AuthContext";
+import { useCache } from "@/context/CacheContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useChallenges } from "@/zustand/store";
 import { Loader } from "@/components/retroui/Loader";
-import Header from "./../../components/Header";
-import PlayAgainDialog from "@/components/Play-Again-Dialog";
+import Header from "../../components/shared/Header";
+import PlayAgainDialog from "@/components/shared/Play-Again-Dialog";
 
 export default function Home() {
-  const { appUser } = useAuth();
+  const { cache } = useCache();
   const navigate = useNavigate();
   const { fetchChallenges, challenges, loading, resetQuiz } = useChallenges();
 
@@ -28,30 +28,30 @@ export default function Home() {
           </div>
         ) : (
           <div className="home-bg flex-1">
-            <main className="h-full max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 p-8">
+            <main className="h-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-8">
               {Object.entries(challenges)
                 .sort(([, a], [, b]) => a.no - b.no)
                 .map(([id, challenge]) => {
-                  const playedChallenge = appUser?.playedChallenges?.[id];
+                  const playedChallenge = cache?.playedChallenges?.[id];
                   const hasPlayed = !!playedChallenge;
                   const score = playedChallenge?.score;
 
                   return (
                     <div
                       key={id}
-                      className="bg-white border-4 transition hover:-translate-y-1 hover:shadow-md cursor-default"
+                      className="bg-white border-4 shadow-md transition hover:-translate-y-1 hover:shadow-lg cursor-default"
                     >
-                      <div className="bg-blue-400 border-b-4">
+                      <div className="bg-[#3B82F6] border-b-4">
                         <img
                           src={challenge.image}
                           alt=""
-                          width={220}
-                          height={220}
-                          className="mx-auto"
+                          height="140px"
+                          width="140px"
+                          className="mx-auto py-16"
                         />
                       </div>
-                      <div className="flex items-end justify-between p-4">
-                        <div className="font-bold text-lg">
+                      <div className="flex items-end justify-between p-3">
+                        <div className="font-bold text-lg space-y-4">
                           <p>Challenge #{challenge.no}</p>
                           <p>Score: {hasPlayed ? score : "-"}</p>
                         </div>

@@ -1,5 +1,5 @@
 import { Button } from "@/components/retroui/Button";
-import HeroText from "../../components/Hero-Text.component";
+import HeroText from "../../components/shared/Logo";
 import { Link } from "react-router-dom";
 
 export default function Root() {

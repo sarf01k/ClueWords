@@ -1,10 +1,10 @@
-import Header from "@/components/Header";
+import Header from "@/components/shared/Header";
 import { Button } from "@/components/retroui/Button";
 import { Input } from "@/components/retroui/Input";
 import { Label } from "@/components/retroui/Label";
 import { Loader } from "@/components/retroui/Loader";
 import { Text } from "@/components/retroui/Text";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/CacheContext";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleAlert, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";

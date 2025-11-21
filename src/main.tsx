@@ -3,14 +3,14 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import { BrowserRouter } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
+import { CacheProvider } from "./context/CacheContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthProvider>
+      <CacheProvider>
         <App />
-      </AuthProvider>
+      </CacheProvider>
     </BrowserRouter>
   </StrictMode>
 );

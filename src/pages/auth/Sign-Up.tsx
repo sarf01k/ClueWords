@@ -3,14 +3,14 @@ import { Text } from "@/components/retroui/Text";
 import { Label } from "@radix-ui/react-label";
 import { Button } from "@/components/retroui/Button";
 import { CircleAlert, Eye, EyeOff, Mail } from "lucide-react";
-import HeroText from "../../components/Hero-Text.component";
+import HeroText from "../../components/shared/Logo";
 import { useState } from "react";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader } from "@/components/retroui/Loader";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/context/CacheContext";
 import { formatError } from "@/utils/errors";
 
 const formSchema = z.object({
